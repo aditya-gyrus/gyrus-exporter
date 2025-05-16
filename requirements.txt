@@ -1,0 +1,15 @@
+accelerate==1.6.0
+numpy==2.2.5
+onnx==1.17.0
+onnx2torch==1.5.15
+onnxruntime==1.21.1
+optimum==1.24.0
+peft==0.15.2
+safetensors==0.5.3
+tokenizers==0.21.1
+torch==2.7.0
+torchao==0.10.0
+torchvision==0.22.0
+tqdm==4.67.1
+transformers==4.51.3
+triton==3.3.0
