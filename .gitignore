@@ -3,3 +3,5 @@ safetensors-2-onnx/
 tf-2-torch/
 onnx-2-torch/bert-base-cased-qa/
 onnx-2-torch/finetune_test.py
+onnx-2-torch/onnx_graph_out.py
+onnx-2-torch/phi_onnx_out.txt

@@ -21,14 +21,10 @@ def copy_files_excluding_safetensors(src_dir, dst_dir):
 
 onnx_model_directory = "../models/onnx-models/bert-base-cased-qa-onnx/"
 
-# onnx_model_path = "../models/onnx-models/bert-base-cased-qa-onnx/model.onnx"
-# torch_model = convert(onnx_model_path)
+onnx_model_path = "../models/onnx-models/bert-base-cased-qa-onnx/model.onnx"
+torch_model = convert(onnx_model_path)
 
-# torch.save(torch_model.state_dict(), "bert-base-cased-qa/pytorch_model.bin")
-
-# tokenizer = AutoTokenizer.from_pretrained("bert-base-cased-qa/")
-# model = AutoModel.from_pretrained("bert-base-cased-qa/")
-
+torch.save(torch_model.state_dict(), "bert-base-cased-qa/pytorch_model.bin")
 
 copy_files_excluding_safetensors(onnx_model_directory,"bert-base-cased-qa/")
 
