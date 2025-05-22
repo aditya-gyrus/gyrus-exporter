@@ -1,11 +1,10 @@
-import torch
-from onnx2torch import convert
-from transformers import AutoTokenizer,AutoModel
 import os
 import shutil
+import torch
+import argparse
+from onnx2torch import convert
 
-
-def copy_files_excluding_safetensors(src_dir, dst_dir):
+def copy_files_excluding_onnx(src_dir, dst_dir):
     os.makedirs(dst_dir, exist_ok=True)
     for root, _, files in os.walk(src_dir):
         rel_root = os.path.relpath(root, src_dir)
@@ -19,13 +18,33 @@ def copy_files_excluding_safetensors(src_dir, dst_dir):
             dst_file = os.path.join(target_root, file)
             shutil.copy2(src_file, dst_file)
 
-onnx_model_directory = "../models/onnx-models/bert-base-cased-qa-onnx/"
 
-onnx_model_path = "../models/onnx-models/bert-base-cased-qa-onnx/model.onnx"
-torch_model = convert(onnx_model_path)
+def main():
+    parser = argparse.ArgumentParser(description="Load Onnx model and save as a pytorch_model.bin")
+    parser.add_argument("--input_onnx_dir",type=str,required=True,help="Path to the input ONNX model directory")
+    parser.add_argument("--output_dir",type=str,required=True,help=" Output Directory to save the pytorch_model.bin file")
+    args = parser.parse_args()
 
-torch.save(torch_model.state_dict(), "bert-base-cased-qa/pytorch_model.bin")
+    print(f"Loading model from {args.input_onnx_dir} ...")
+    input_model_path = os.path.join(args.input_onnx_dir,"model.onnx")
 
-copy_files_excluding_safetensors(onnx_model_directory,"bert-base-cased-qa/")
+    torch_model = convert(input_model_path)
 
+    os.makedirs(args.output_dir, exist_ok=True)
+    
+    output_path = os.path.join(args.output_dir, "pytorch_model.bin")
+    print(f"Saving weights to {output_path} ...")
+
+    torch.save(torch_model, output_path)  ##changed from state_dict only to full model
+    copy_files_excluding_onnx(args.input_onnx_dir,args.output_dir)
+
+    model = torch.load(output_path,weights_only=False)
+
+    with open("model_out.txt","w") as file:
+        file.write(str(model))
+    
+    print("Export Completed!")
+
+if __name__ == "__main__":
+    main()
 

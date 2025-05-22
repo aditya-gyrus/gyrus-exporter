@@ -26,20 +26,23 @@ def main():
     args = parser.parse_args()
 
     print(f"Loading model from {args.input_dir} ...")
-    model = AutoModel.from_pretrained(args.input_dir)
+    model = AutoModel.from_pretrained(args.input_dir,torch_dtype= "auto",device_map="auto")
 
     os.makedirs(args.output_dir, exist_ok=True)
 
     output_path = os.path.join(args.output_dir, "pytorch_model.bin")
     print(f"Saving merged weights to {output_path} ...")
-    torch.save(model.state_dict(), output_path)
 
+    torch.save(model, output_path) #changed from state_dict to full model save
     copy_files_excluding_safetensors(args.input_dir, args.output_dir)
 
-    print("Done.")
+    model = torch.load(output_path,weights_only=False)
 
+    with open("model.txt","w") as file:
+        file.write(str(model))
 
-#python3 converter_test.py --input_dir ../models/hf-models/phi_1_5 --output_dir phi_output
+    print("Export Completed!")
+
 
 if __name__ == "__main__":
     main()
