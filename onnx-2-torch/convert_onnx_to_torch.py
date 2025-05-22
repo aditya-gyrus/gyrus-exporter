@@ -40,8 +40,9 @@ def main():
 
     model = torch.load(output_path,weights_only=False)
 
-    with open("model_out.txt","w") as file:
-        file.write(str(model))
+    if not os.path.isfile("model.txt"):
+        with open("model.txt","w") as file:
+            file.write(str(model))
     
     print("Export Completed!")
 
